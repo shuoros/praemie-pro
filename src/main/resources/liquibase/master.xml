@@ -3,4 +3,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="liquibase/changelog/20250711214228_Entity_User.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250711214547_Entity_Authority.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250711215038_Relation_User__Authority.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>
