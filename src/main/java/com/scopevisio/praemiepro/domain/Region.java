@@ -1,5 +1,6 @@
 package com.scopevisio.praemiepro.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
@@ -18,25 +19,14 @@ public class Region implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Size(max = 2)
-    @Column(name = "country", length = 2)
-    private String country;
-
     @Column(name = "region_1")
-    private String region;
-
-    @Size(max = 5)
-    @Column(name = "region_code", length = 5)
-    private String regionCode;
+    private String region1;
 
     @Column(name = "region_2")
     private String region2;
 
     @Column(name = "region_3")
     private String region3;
-
-    @Column(name = "region_4")
-    private String region4;
 
     @Size(max = 5)
     @Column(name = "zipcode", length = 5)
@@ -69,6 +59,10 @@ public class Region implements Serializable {
     @Column(name = "active")
     private String active;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "regions" }, allowSetters = true)
+    private State state;
+
     public Long getId() {
         return id;
     }
@@ -77,28 +71,12 @@ public class Region implements Serializable {
         this.id = id;
     }
 
-    public String getCountry() {
-        return country;
+    public String getRegion1() {
+        return region1;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getRegionCode() {
-        return regionCode;
-    }
-
-    public void setRegionCode(String regionCode) {
-        this.regionCode = regionCode;
+    public void setRegion1(String region1) {
+        this.region1 = region1;
     }
 
     public String getRegion2() {
@@ -115,14 +93,6 @@ public class Region implements Serializable {
 
     public void setRegion3(String region3) {
         this.region3 = region3;
-    }
-
-    public String getRegion4() {
-        return region4;
-    }
-
-    public void setRegion4(String region4) {
-        this.region4 = region4;
     }
 
     public String getZipcode() {
@@ -205,6 +175,14 @@ public class Region implements Serializable {
         this.active = active;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -225,12 +203,9 @@ public class Region implements Serializable {
     public String toString() {
         return "Region{" +
                 "id=" + id +
-                ", country='" + country + '\'' +
-                ", region='" + region + '\'' +
-                ", regionCode='" + regionCode + '\'' +
+                ", region1='" + region1 + '\'' +
                 ", region2='" + region2 + '\'' +
                 ", region3='" + region3 + '\'' +
-                ", region4='" + region4 + '\'' +
                 ", zipcode='" + zipcode + '\'' +
                 ", location='" + location + '\'' +
                 ", area1='" + area1 + '\'' +
@@ -239,7 +214,7 @@ public class Region implements Serializable {
                 ", latitude=" + latitude +
                 ", timezone='" + timezone + '\'' +
                 ", utc='" + utc + '\'' +
-                ", summerTime=" + isSummerTime +
+                ", isSummerTime=" + isSummerTime +
                 ", active='" + active + '\'' +
                 '}';
     }

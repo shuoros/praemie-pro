@@ -8,5 +8,9 @@
     <include file="liquibase/changelog/20250711214547_Entity_Authority.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20250711215038_Relation_User__Authority.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20250712145633_Entity_Region.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250712162605_Entity_State.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250712163954_Relation_State__Region.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250712172348_Entity_Country.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250712172637_Relation_Country__State.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
