@@ -22,7 +22,6 @@ public class SystemParameter implements Serializable {
     @Column(name = "base_insurance_price", precision = 21, scale = 2)
     private BigDecimal baseInsurancePrice;
 
-
     public Long getId() {
         return id;
     }

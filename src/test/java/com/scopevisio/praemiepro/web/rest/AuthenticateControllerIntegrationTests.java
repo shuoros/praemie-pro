@@ -43,11 +43,17 @@ public class AuthenticateControllerIntegrationTests {
 
     @BeforeAll
     void beforeAll() {
-        final User user = new User();
-        user.setEmail("user@example.com");
-        user.setActivated(true);
-        user.setPassword(passwordEncoder.encode("test"));
-        userRepository.saveAndFlush(user);
+        final User activatedUser = new User();
+        activatedUser.setEmail("user@example.com");
+        activatedUser.setActivated(true);
+        activatedUser.setPassword(passwordEncoder.encode("test"));
+        userRepository.saveAndFlush(activatedUser);
+
+        final User nonActivatedUser = new User();
+        nonActivatedUser.setEmail("user2@example.com");
+        nonActivatedUser.setActivated(false);
+        nonActivatedUser.setPassword(passwordEncoder.encode("test"));
+        userRepository.saveAndFlush(nonActivatedUser);
     }
 
     @Test
@@ -88,11 +94,41 @@ public class AuthenticateControllerIntegrationTests {
     }
 
     @Test
-    void testAuthenticateFails() throws Exception {
+    void testAuthenticateWithWrongUsernameAndPassword() throws Exception {
         // Arrange
         final LoginVM login = new LoginVM();
         login.setEmail("wrong@example.com");
         login.setPassword("wrong password");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/authenticate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(login)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.token").doesNotExist())
+                .andExpect(header().doesNotExist("Authorization"));
+    }
+
+    @Test
+    void testAuthenticateWithRightUsernameButWrongPassword() throws Exception {
+        // Arrange
+        final LoginVM login = new LoginVM();
+        login.setEmail("user@example.com");
+        login.setPassword("wrong password");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/authenticate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(login)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.token").doesNotExist())
+                .andExpect(header().doesNotExist("Authorization"));
+    }
+
+    @Test
+    void testAuthenticateWithNonActivatedUser() throws Exception {
+        // Arrange
+        final LoginVM login = new LoginVM();
+        login.setEmail("user2@example.com");
+        login.setPassword("test");
 
         // Act & Assert
         mockMvc

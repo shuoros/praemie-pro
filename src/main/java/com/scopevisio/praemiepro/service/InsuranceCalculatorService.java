@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class InsuranceCalculationService {
+public class InsuranceCalculatorService {
 
     @Autowired
     private StateRepository stateRepository;

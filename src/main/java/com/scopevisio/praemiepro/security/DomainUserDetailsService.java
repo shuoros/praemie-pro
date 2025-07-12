@@ -34,17 +34,15 @@ public class DomainUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String email) {
         LOG.debug("Authenticating {}", email);
 
-        final String lowercaseEmail = email.toLowerCase(Locale.ENGLISH);
-
         return userRepository
-                .findOneWithAuthoritiesByEmailIgnoreCase(lowercaseEmail)
-                .map(user -> createSpringSecurityUser(lowercaseEmail, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + lowercaseEmail + " was not found"));
+                .findOneWithAuthoritiesByEmailIgnoreCase(email)
+                .map(user -> createSpringSecurityUser(email, user))
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " was not found"));
     }
 
-    private org.springframework.security.core.userdetails.User createSpringSecurityUser(final String lowercaseEmail, final User user) {
+    private org.springframework.security.core.userdetails.User createSpringSecurityUser(final String email, final User user) {
         if (!user.isActivated()) {
-            throw new UserNotActivatedException(lowercaseEmail);
+            throw new UserNotActivatedException(email);
         }
 
         final List<GrantedAuthority> grantedAuthorities = user

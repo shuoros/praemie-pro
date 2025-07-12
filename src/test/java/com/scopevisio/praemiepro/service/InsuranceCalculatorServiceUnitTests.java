@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InsuranceCalculationServiceUnitTests {
+public class InsuranceCalculatorServiceUnitTests {
 
     private static final String VALID_ZIPCODE = "50374";
     private static final String INVALID_ZIPCODE = "00000";
@@ -31,7 +31,7 @@ public class InsuranceCalculationServiceUnitTests {
     private SystemParameterService systemParameterService;
 
     @InjectMocks
-    private InsuranceCalculationService insuranceCalculationService;
+    private InsuranceCalculatorService insuranceCalculatorService;
 
     private void setupWithValidZipcode() {
         final State state = new State();
@@ -51,7 +51,7 @@ public class InsuranceCalculationServiceUnitTests {
         final Integer yearlyDrive = 10000;
 
         // Act
-        final InsuranceDTO insuranceDTO = insuranceCalculationService.calculateInsurance(
+        final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE
@@ -71,7 +71,7 @@ public class InsuranceCalculationServiceUnitTests {
         final Integer yearlyDrive = 4500;
 
         // Act
-        final InsuranceDTO insuranceDTO = insuranceCalculationService.calculateInsurance(
+        final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE
@@ -94,7 +94,7 @@ public class InsuranceCalculationServiceUnitTests {
         // Act & Assert
         assertThrows(
                 WrongZipcodeException.class,
-                () -> insuranceCalculationService.calculateInsurance(
+                () -> insuranceCalculatorService.calculateInsurance(
                         vehicleType,
                         yearlyDrive,
                         INVALID_ZIPCODE
