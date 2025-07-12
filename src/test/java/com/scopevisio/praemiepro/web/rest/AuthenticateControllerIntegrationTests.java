@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AuthenticateControllerIT {
+public class AuthenticateControllerIntegrationTests {
 
     @Autowired
     private ObjectMapper objectMapper;
