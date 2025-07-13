@@ -64,8 +64,60 @@ public class OrderServiceIntegrationTests extends AbstractTest {
     }
 
     @Test
+    void testCreateOrderWithValidData() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final Integer yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        // Act
+        final Order order = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user
+        );
+
+        // Assert
+        assertNotNull(order);
+        assertNotNull(order.getId());
+        assertNotNull(order.getUser());
+        assertEquals(USER_EMAIL, order.getUser().getEmail());
+        assertEquals(vehicleType, order.getVehicleType());
+        assertEquals(yearlyDrive, order.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, order.getZipcode());
+        assertEquals(AbstractTest.getBigDecimal(1650.00), order.getYearlyPrice());
+    }
+
+    @Test
+    void testCreateOrderWithAnotherValidData() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.OLD_TIMER;
+        final Integer yearlyDrive = 4500;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        // Act
+        final Order order = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user
+        );
+
+        // Assert
+        assertNotNull(order);
+        assertNotNull(order.getId());
+        assertNotNull(order.getUser());
+        assertEquals(USER_EMAIL, order.getUser().getEmail());
+        assertEquals(vehicleType, order.getVehicleType());
+        assertEquals(yearlyDrive, order.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, order.getZipcode());
+        assertEquals(AbstractTest.getBigDecimal(1100.00), order.getYearlyPrice());
+    }
+
+    @Test
     @WithMockUser(username = USER_EMAIL)
-    void testRegisterOrder1() {
+    void testRegisterOrderWithValidData() {
         // Arrange
         final VehicleType vehicleType = VehicleType.SPORT;
         final Integer yearlyDrive = 10000;
@@ -90,7 +142,7 @@ public class OrderServiceIntegrationTests extends AbstractTest {
 
     @Test
     @WithMockUser(username = USER_EMAIL)
-    void testRegisterOrder2() {
+    void testRegisterOrderWithAnotherValidData() {
         // Arrange
         final VehicleType vehicleType = VehicleType.OLD_TIMER;
         final Integer yearlyDrive = 4500;

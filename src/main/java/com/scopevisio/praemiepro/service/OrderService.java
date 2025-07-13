@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class OrderService {
 
     @Autowired
@@ -22,26 +23,41 @@ public class OrderService {
     @Autowired
     private InsuranceCalculatorService insuranceCalculatorService;
 
-    @Transactional
-    public Order placeOrder(final VehicleType vehicleType, final Integer yearlyDrive, final String zipcode) {
+    public Order createOrder(final VehicleType vehicleType,
+                             final Integer yearlyDrive,
+                             final String zipcode,
+                             final User user) {
         final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
                 vehicleType,
                 yearlyDrive,
                 zipcode
         );
 
-        return createOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO);
+        return saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, user);
     }
 
-    private Order createOrder(final VehicleType vehicleType, final Integer yearlyDrive, final String zipcode, final InsuranceDTO insuranceDTO) {
+    public Order registerOrder(final VehicleType vehicleType, final Integer yearlyDrive, final String zipcode) {
+        final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
+                vehicleType,
+                yearlyDrive,
+                zipcode
+        );
         final User currentUser = userService.getCurrentUser().orElseThrow(UserNotFoundException::new);
 
+        return saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, currentUser);
+    }
+
+    private Order saveOrder(final VehicleType vehicleType,
+                            final Integer yearlyDrive,
+                            final String zipcode,
+                            final InsuranceDTO insuranceDTO,
+                            final User user) {
         final Order order = new Order();
         order.setVehicleType(vehicleType);
         order.setYearlyDrive(yearlyDrive);
         order.setZipcode(zipcode);
         order.setYearlyPrice(insuranceDTO.getYearlyPrice());
-        order.setUser(currentUser);
+        order.setUser(user);
         return orderRepository.save(order);
     }
 }
