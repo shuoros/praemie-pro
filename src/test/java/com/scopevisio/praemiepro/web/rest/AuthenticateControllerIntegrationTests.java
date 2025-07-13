@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -42,6 +43,7 @@ public class AuthenticateControllerIntegrationTests {
     private MockMvc mockMvc;
 
     @BeforeAll
+    @Transactional
     void beforeAll() {
         final User activatedUser = new User();
         activatedUser.setEmail("user@example.com");
@@ -54,6 +56,12 @@ public class AuthenticateControllerIntegrationTests {
         nonActivatedUser.setActivated(false);
         nonActivatedUser.setPassword(passwordEncoder.encode("test"));
         userRepository.saveAndFlush(nonActivatedUser);
+    }
+
+    @AfterAll
+    @Transactional
+    void afterAll() {
+        userRepository.deleteAll();
     }
 
     @Test

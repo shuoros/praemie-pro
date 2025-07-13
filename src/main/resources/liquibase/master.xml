@@ -13,5 +13,7 @@
     <include file="liquibase/changelog/20250712172348_Entity_Country.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20250712172637_Relation_Country__State.xml" relativeToChangelogFile="false"/>
     <include file="liquibase/changelog/20250712182819_Entity_SystemParameter.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250713114620_Entity_Order.xml" relativeToChangelogFile="false"/>
+    <include file="liquibase/changelog/20250713114920_Relation_User__Order.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

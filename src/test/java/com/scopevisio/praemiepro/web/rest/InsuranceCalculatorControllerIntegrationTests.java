@@ -6,6 +6,7 @@ import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.web.rest.vm.CalculateVM;
 import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class InsuranceCalculatorControllerIntegrationTests {
 
     @Autowired
@@ -35,7 +35,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
     private MockMvc mockMvc;
 
     @Test
-    void testCalculateInsurance() throws Exception {
+    void testCalculateInsuranceWithValidData() throws Exception {
         // Arrange
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.SPORT);
@@ -52,7 +52,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
     }
 
     @Test
-    void testCalculateInsurance2() throws Exception {
+    void testCalculateInsuranceWithAnotherValidData() throws Exception {
         // Arrange
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.OLD_TIMER);
@@ -66,6 +66,23 @@ public class InsuranceCalculatorControllerIntegrationTests {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.yearlyPrice").value(1100.00))
                 .andExpect(jsonPath("$.monthlyPrice").value(91.67));
+    }
+
+    @Test
+    void testCalculateInsuranceWithJsonKeysAsSnakeCase() throws Exception {
+        // Arrange
+        final JSONObject payload = new JSONObject();
+        payload.put("vehicle_type", "SPORT");
+        payload.put("yearly_drive", 10000);
+        payload.put("zipcode", "50374");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/public/insurance/calculate").contentType(MediaType.APPLICATION_JSON).content(payload.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.yearlyPrice").value(1650.00))
+                .andExpect(jsonPath("$.monthlyPrice").value(137.50));
     }
 
     @Test
@@ -83,11 +100,37 @@ public class InsuranceCalculatorControllerIntegrationTests {
     }
 
     @Test
-    void testCalculateInsuranceWithNullValues() throws Exception {
+    void testCalculateInsuranceWithNullVehicleType() throws Exception {
         // Arrange
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setYearlyDrive(10000);
         calculateVM.setZipcode("00000");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/public/insurance/calculate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(calculateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testCalculateInsuranceWithNullYearlyDrive() throws Exception {
+        // Arrange
+        final CalculateVM calculateVM = new CalculateVM();
+        calculateVM.setVehicleType(VehicleType.OLD_TIMER);
+        calculateVM.setZipcode("00000");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/public/insurance/calculate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(calculateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testCalculateInsuranceWithNullZipcode() throws Exception {
+        // Arrange
+        final CalculateVM calculateVM = new CalculateVM();
+        calculateVM.setVehicleType(VehicleType.OLD_TIMER);
+        calculateVM.setYearlyDrive(10000);
 
         // Act & Assert
         mockMvc
@@ -120,6 +163,20 @@ public class InsuranceCalculatorControllerIntegrationTests {
         // Act & Assert
         mockMvc
                 .perform(post("/public/insurance/calculate").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(calculateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testCalculateInsuranceWithWrongVehicleType() throws Exception {
+        // Arrange
+        final JSONObject payload = new JSONObject();
+        payload.put("vehicleType", "AUTO");
+        payload.put("yearlyDrive", 10000);
+        payload.put("zipcode", "50374");
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/public/insurance/calculate").contentType(MediaType.APPLICATION_JSON).content(payload.toString()))
                 .andExpect(status().is4xxClientError());
     }
 }
