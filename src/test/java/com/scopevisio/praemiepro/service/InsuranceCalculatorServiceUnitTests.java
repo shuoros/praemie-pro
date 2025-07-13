@@ -6,7 +6,7 @@ import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.exception.WrongZipcodeException;
 import com.scopevisio.praemiepro.repository.StateRepository;
 import com.scopevisio.praemiepro.service.dto.InsuranceDTO;
-import com.scopevisio.praemiepro.util.TestUtils;
+import com.scopevisio.praemiepro.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,10 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InsuranceCalculatorServiceUnitTests {
-
-    private static final String VALID_ZIPCODE = "50374";
-    private static final String INVALID_ZIPCODE = "00000";
+public class InsuranceCalculatorServiceUnitTests extends AbstractTest {
 
     @Mock
     private StateRepository stateRepository;
@@ -60,8 +57,8 @@ public class InsuranceCalculatorServiceUnitTests {
 
         // Assert
         assertNotNull(insuranceDTO);
-        assertEquals(TestUtils.getBigDecimal(1650.00), insuranceDTO.getYearlyPrice());
-        assertEquals(TestUtils.getBigDecimal(137.50), insuranceDTO.getMonthlyPrice());
+        assertEquals(AbstractTest.getBigDecimal(1650.00), insuranceDTO.getYearlyPrice());
+        assertEquals(AbstractTest.getBigDecimal(137.50), insuranceDTO.getMonthlyPrice());
     }
 
     @Test
@@ -80,8 +77,8 @@ public class InsuranceCalculatorServiceUnitTests {
 
         // Assert
         assertNotNull(insuranceDTO);
-        assertEquals(TestUtils.getBigDecimal(1100.00), insuranceDTO.getYearlyPrice());
-        assertEquals(TestUtils.getBigDecimal(91.67), insuranceDTO.getMonthlyPrice());
+        assertEquals(AbstractTest.getBigDecimal(1100.00), insuranceDTO.getYearlyPrice());
+        assertEquals(AbstractTest.getBigDecimal(91.67), insuranceDTO.getMonthlyPrice());
     }
 
     @Test

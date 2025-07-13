@@ -1,6 +1,7 @@
 package com.scopevisio.praemiepro.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.repository.UserRepository;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-public class InsuranceCalculatorControllerIntegrationTests {
+public class InsuranceCalculatorControllerIntegrationTests extends AbstractTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,7 +41,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.SPORT);
         calculateVM.setYearlyDrive(10000);
-        calculateVM.setZipcode("50374");
+        calculateVM.setZipcode(VALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -57,7 +58,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.OLD_TIMER);
         calculateVM.setYearlyDrive(4500);
-        calculateVM.setZipcode("50374");
+        calculateVM.setZipcode(VALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -74,7 +75,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final JSONObject payload = new JSONObject();
         payload.put("vehicle_type", "SPORT");
         payload.put("yearly_drive", 10000);
-        payload.put("zipcode", "50374");
+        payload.put("zipcode", VALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -91,7 +92,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.SPORT);
         calculateVM.setYearlyDrive(10000);
-        calculateVM.setZipcode("00000");
+        calculateVM.setZipcode(INVALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -104,7 +105,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         // Arrange
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setYearlyDrive(10000);
-        calculateVM.setZipcode("00000");
+        calculateVM.setZipcode(INVALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -117,7 +118,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         // Arrange
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.OLD_TIMER);
-        calculateVM.setZipcode("00000");
+        calculateVM.setZipcode(INVALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -158,7 +159,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final CalculateVM calculateVM = new CalculateVM();
         calculateVM.setVehicleType(VehicleType.SPORT);
         calculateVM.setYearlyDrive(-10000);
-        calculateVM.setZipcode("50374");
+        calculateVM.setZipcode(VALID_ZIPCODE);
 
         // Act & Assert
         mockMvc
@@ -172,7 +173,7 @@ public class InsuranceCalculatorControllerIntegrationTests {
         final JSONObject payload = new JSONObject();
         payload.put("vehicleType", "AUTO");
         payload.put("yearlyDrive", 10000);
-        payload.put("zipcode", "50374");
+        payload.put("zipcode", VALID_ZIPCODE);
 
         // Act & Assert
         mockMvc

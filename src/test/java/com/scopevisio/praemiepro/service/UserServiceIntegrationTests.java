@@ -1,6 +1,6 @@
 package com.scopevisio.praemiepro.service;
 
-import com.scopevisio.praemiepro.domain.Authority;
+import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
@@ -15,16 +15,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UserServiceIntegrationTests {
-
-    private static final String EMAIL = "user@example.com";
+public class UserServiceIntegrationTests extends AbstractTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -38,14 +35,10 @@ public class UserServiceIntegrationTests {
     @BeforeAll
     @Transactional
     void beforeAll() {
-        final Authority authority = new Authority();
-        authority.setName("ROLE_USER");
-
         final User user = new User();
-        user.setEmail(EMAIL);
+        user.setEmail(USER_EMAIL);
         user.setActivated(true);
         user.setPassword(passwordEncoder.encode("test"));
-        user.setAuthorities(Set.of(authority));
         userRepository.saveAndFlush(user);
     }
 
@@ -56,14 +49,14 @@ public class UserServiceIntegrationTests {
     }
 
     @Test
-    @WithMockUser(username = EMAIL)
+    @WithMockUser(username = USER_EMAIL)
     void testGetCurrentUser() {
         // Act
         final Optional<User> optionalUser = userService.getCurrentUser();
 
         // Assert
         assertTrue(optionalUser.isPresent());
-        assertEquals(EMAIL, optionalUser.get().getEmail());
+        assertEquals(USER_EMAIL, optionalUser.get().getEmail());
     }
 
     @Test

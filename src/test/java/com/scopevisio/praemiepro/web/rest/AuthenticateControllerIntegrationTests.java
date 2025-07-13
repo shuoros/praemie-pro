@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AuthenticateControllerIntegrationTests {
+public class AuthenticateControllerIntegrationTests extends AbstractTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -46,15 +47,15 @@ public class AuthenticateControllerIntegrationTests {
     @Transactional
     void beforeAll() {
         final User activatedUser = new User();
-        activatedUser.setEmail("user@example.com");
+        activatedUser.setEmail(USER_EMAIL);
         activatedUser.setActivated(true);
-        activatedUser.setPassword(passwordEncoder.encode("test"));
+        activatedUser.setPassword(passwordEncoder.encode(PASSWORD));
         userRepository.saveAndFlush(activatedUser);
 
         final User nonActivatedUser = new User();
-        nonActivatedUser.setEmail("user2@example.com");
+        nonActivatedUser.setEmail(USER_EMAIL_2);
         nonActivatedUser.setActivated(false);
-        nonActivatedUser.setPassword(passwordEncoder.encode("test"));
+        nonActivatedUser.setPassword(passwordEncoder.encode(PASSWORD));
         userRepository.saveAndFlush(nonActivatedUser);
     }
 
@@ -69,8 +70,8 @@ public class AuthenticateControllerIntegrationTests {
     void testAuthenticate() throws Exception {
         // Arrange
         final LoginVM login = new LoginVM();
-        login.setEmail("user@example.com");
-        login.setPassword("test");
+        login.setEmail(USER_EMAIL);
+        login.setPassword(PASSWORD);
 
         // Act & Assert
         mockMvc
@@ -87,8 +88,8 @@ public class AuthenticateControllerIntegrationTests {
     void testAuthenticateWithRememberMe() throws Exception {
         // Arrange
         final LoginVM login = new LoginVM();
-        login.setEmail("user@example.com");
-        login.setPassword("test");
+        login.setEmail(USER_EMAIL);
+        login.setPassword(PASSWORD);
         login.setRememberMe(true);
 
         // Act & Assert
@@ -120,7 +121,7 @@ public class AuthenticateControllerIntegrationTests {
     void testAuthenticateWithRightUsernameButWrongPassword() throws Exception {
         // Arrange
         final LoginVM login = new LoginVM();
-        login.setEmail("user@example.com");
+        login.setEmail(USER_EMAIL);
         login.setPassword("wrong password");
 
         // Act & Assert
@@ -135,8 +136,8 @@ public class AuthenticateControllerIntegrationTests {
     void testAuthenticateWithNonActivatedUser() throws Exception {
         // Arrange
         final LoginVM login = new LoginVM();
-        login.setEmail("user2@example.com");
-        login.setPassword("test");
+        login.setEmail(USER_EMAIL_2);
+        login.setPassword(PASSWORD);
 
         // Act & Assert
         mockMvc

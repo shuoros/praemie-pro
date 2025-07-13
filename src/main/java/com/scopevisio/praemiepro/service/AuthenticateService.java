@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AuthenticateService {
 
-    private static final String AUTHORITIES_CLAIM = "auth";
+    private static final String AUTHORITIES_CLAIM = "scope";
 
     private static final String USER_EMAIL_CLAIM = "userEmail";
 
@@ -32,10 +33,10 @@ public class AuthenticateService {
     private JwtEncoder jwtEncoder;
 
     public String createToken(final Authentication authentication, final boolean rememberMe) {
-        final String authorities = authentication.getAuthorities()
+        final List<String> authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .toList();
 
         final Instant now = Instant.now();
         final Instant validity = rememberMe
