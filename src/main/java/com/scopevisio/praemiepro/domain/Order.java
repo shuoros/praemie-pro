@@ -3,20 +3,17 @@ package com.scopevisio.praemiepro.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "p_order")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Order implements Serializable {
+public class Order extends AbstractAuditEntity<Long> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")

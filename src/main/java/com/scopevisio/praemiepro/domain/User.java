@@ -1,6 +1,7 @@
 package com.scopevisio.praemiepro.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "p_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class User extends AbstractTimestampedEntity<Long> implements Serializable {
+public class User extends AbstractAuditEntity<Long> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -56,6 +57,11 @@ public class User extends AbstractTimestampedEntity<Long> implements Serializabl
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Order> orders = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -113,6 +119,14 @@ public class User extends AbstractTimestampedEntity<Long> implements Serializabl
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 
     @Override

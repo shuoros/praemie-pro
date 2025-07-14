@@ -16,6 +16,12 @@
             <column name="yearly_price" type="decimal(21,2)"/>
             <column name="zipcode" type="varchar(5)"/>
             <column name="user_id" type="bigint"/>
+            <column name="created_date" type="timestamp"/>
+            <column name="created_by" type="varchar(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(254)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

@@ -1,4 +1,4 @@
-id;email;password_hash;first_name;last_name;activated
-1;admin@praemiepro.com;$2a$12$nFFx4OWLxMIG821Zr2Q3c.YjfoLxYHMFalZZ1UP2norMCFZ33DXkm;Administrator;Administrator;true
-2;user@praemiepro.com;$2a$12$TtjbTxX74MoYmhLh8qcwdOK5U5UMpTzAURgAYYnkT5KbmKgUoENCu;User;User;true
-3;api@praemiepro.com;$2a$12$tcp/ja9qEHPPVlt3ZiA9yeyFUn6nNVvaBIkLarBzu5ORhrgkDaBnK;API;API;true
+id;email;password_hash;first_name;last_name;activated;created_by;last_modified_by
+1;admin@praemiepro.com;$2a$12$nFFx4OWLxMIG821Zr2Q3c.YjfoLxYHMFalZZ1UP2norMCFZ33DXkm;Administrator;Administrator;true;system;system
+2;user@praemiepro.com;$2a$12$TtjbTxX74MoYmhLh8qcwdOK5U5UMpTzAURgAYYnkT5KbmKgUoENCu;User;User;true;system;system
+3;api@praemiepro.com;$2a$12$tcp/ja9qEHPPVlt3ZiA9yeyFUn6nNVvaBIkLarBzu5ORhrgkDaBnK;API;API;true;system;system

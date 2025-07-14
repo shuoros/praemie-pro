@@ -13,7 +13,7 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="email" type="varchar(191)">
+            <column name="email" type="varchar(254)">
                 <constraints unique="true" nullable="true" uniqueConstraintName="ux_user_email"/>
             </column>
             <column name="password_hash" type="varchar(60)"/>
@@ -23,7 +23,11 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp"/>
+            <column name="created_by" type="varchar(254)">
+                <constraints nullable="false"/>
+            </column>
             <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(254)"/>
         </createTable>
 
         <addNotNullConstraint   columnName="password_hash"
@@ -43,6 +47,8 @@
             <column name="first_name" type="string"/>
             <column name="last_name" type="string"/>
             <column name="activated" type="boolean"/>
+            <column name="created_by" type="string"/>
+            <column name="last_modified_by" type="string"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

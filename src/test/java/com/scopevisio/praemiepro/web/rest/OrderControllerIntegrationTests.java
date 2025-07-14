@@ -101,6 +101,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType.toString()))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1650.00))
+                .andExpect(jsonPath("$.createdBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
     }
@@ -128,6 +132,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType.toString()))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1100.00))
+                .andExpect(jsonPath("$.createdBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
     }
@@ -192,6 +200,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType.toString()))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1650.00))
+                .andExpect(jsonPath("$.createdBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(ADMIN_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(ADMIN_EMAIL));
     }
@@ -217,6 +229,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType.toString()))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1650.00))
+                .andExpect(jsonPath("$.createdBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
     }
@@ -242,6 +258,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType.toString()))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1100.00))
+                .andExpect(jsonPath("$.createdBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
     }
@@ -284,6 +304,10 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.vehicleType").value(vehicleType))
                 .andExpect(jsonPath("$.yearlyDrive").value(yearlyDrive))
                 .andExpect(jsonPath("$.yearlyPrice").value(1650.00))
+                .andExpect(jsonPath("$.createdBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.createdDate").exists())
+                .andExpect(jsonPath("$.lastModifiedBy").value(USER_EMAIL))
+                .andExpect(jsonPath("$.lastModifiedDate").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
     }

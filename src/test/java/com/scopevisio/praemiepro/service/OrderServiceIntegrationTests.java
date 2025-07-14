@@ -1,5 +1,6 @@
 package com.scopevisio.praemiepro.service;
 
+import com.scopevisio.praemiepro.config.Constants;
 import com.scopevisio.praemiepro.domain.Authority;
 import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.domain.User;
@@ -53,6 +54,7 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         user.setActivated(true);
         user.setPassword(passwordEncoder.encode("test"));
         user.setAuthorities(Set.of(authority));
+        user.setCreatedBy(Constants.SYSTEM);
         userRepository.saveAndFlush(user);
     }
 
@@ -87,6 +89,10 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         assertEquals(yearlyDrive, order.getYearlyDrive());
         assertEquals(VALID_ZIPCODE, order.getZipcode());
         assertEquals(AbstractTest.getBigDecimal(1650.00), order.getYearlyPrice());
+        assertNotNull(order.getCreatedBy());
+        assertNotNull(order.getCreatedDate());
+        assertNotNull(order.getLastModifiedBy());
+        assertNotNull(order.getLastModifiedDate());
     }
 
     @Test
@@ -113,6 +119,10 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         assertEquals(yearlyDrive, order.getYearlyDrive());
         assertEquals(VALID_ZIPCODE, order.getZipcode());
         assertEquals(AbstractTest.getBigDecimal(1100.00), order.getYearlyPrice());
+        assertNotNull(order.getCreatedBy());
+        assertNotNull(order.getCreatedDate());
+        assertNotNull(order.getLastModifiedBy());
+        assertNotNull(order.getLastModifiedDate());
     }
 
     @Test
@@ -138,6 +148,10 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         assertEquals(yearlyDrive, order.getYearlyDrive());
         assertEquals(VALID_ZIPCODE, order.getZipcode());
         assertEquals(AbstractTest.getBigDecimal(1650.00), order.getYearlyPrice());
+        assertNotNull(order.getCreatedBy());
+        assertNotNull(order.getCreatedDate());
+        assertNotNull(order.getLastModifiedBy());
+        assertNotNull(order.getLastModifiedDate());
     }
 
     @Test
@@ -163,6 +177,10 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         assertEquals(yearlyDrive, order.getYearlyDrive());
         assertEquals(VALID_ZIPCODE, order.getZipcode());
         assertEquals(AbstractTest.getBigDecimal(1100.00), order.getYearlyPrice());
+        assertNotNull(order.getCreatedBy());
+        assertNotNull(order.getCreatedDate());
+        assertNotNull(order.getLastModifiedBy());
+        assertNotNull(order.getLastModifiedDate());
     }
 
     @Test
