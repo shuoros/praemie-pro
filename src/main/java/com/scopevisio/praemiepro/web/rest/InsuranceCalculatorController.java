@@ -2,7 +2,7 @@ package com.scopevisio.praemiepro.web.rest;
 
 import com.scopevisio.praemiepro.service.InsuranceCalculatorService;
 import com.scopevisio.praemiepro.service.dto.InsuranceDTO;
-import com.scopevisio.praemiepro.web.rest.vm.CalculateVM;
+import com.scopevisio.praemiepro.web.vm.CalculateVM;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

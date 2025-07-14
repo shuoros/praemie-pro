@@ -2,7 +2,7 @@ package com.scopevisio.praemiepro.web.rest;
 
 import com.scopevisio.praemiepro.service.AuthenticateService;
 import com.scopevisio.praemiepro.service.dto.JwtDTO;
-import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
+import com.scopevisio.praemiepro.web.vm.LoginVM;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

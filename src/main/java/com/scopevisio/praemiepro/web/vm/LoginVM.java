@@ -1,4 +1,4 @@
-package com.scopevisio.praemiepro.web.rest.vm;
+package com.scopevisio.praemiepro.web.vm;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

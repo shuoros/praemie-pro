@@ -1,4 +1,4 @@
-package com.scopevisio.praemiepro.web.rest.vm;
+package com.scopevisio.praemiepro.web.vm;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;

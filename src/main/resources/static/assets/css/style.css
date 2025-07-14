@@ -1,0 +1,42 @@
+:root {
+    --primary-color: #fabb1e;
+}
+
+body {
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: black;
+}
+
+.btn-primary:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+table {
+    margin-top: 2rem;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: black;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: auto;
+}

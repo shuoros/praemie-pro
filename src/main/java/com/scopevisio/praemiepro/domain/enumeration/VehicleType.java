@@ -1,6 +1,6 @@
 package com.scopevisio.praemiepro.domain.enumeration;
 
-public enum VehicleType {
+public enum VehicleType implements TranslatedEnum<VehicleType> {
 
     SPORT(1.5f),
     SEDAN(1.25f),

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.repository.UserRepository;
-import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
+import com.scopevisio.praemiepro.web.vm.LoginVM;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -2,26 +2,16 @@ package com.scopevisio.praemiepro.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scopevisio.praemiepro.AbstractTest;
-import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
-import com.scopevisio.praemiepro.repository.UserRepository;
-import com.scopevisio.praemiepro.web.rest.vm.CalculateVM;
-import com.scopevisio.praemiepro.web.rest.vm.LoginVM;
+import com.scopevisio.praemiepro.web.vm.CalculateVM;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
