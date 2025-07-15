@@ -2,6 +2,7 @@ package com.scopevisio.praemiepro.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import com.scopevisio.praemiepro.security.TokenResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,9 +49,7 @@ public class JwtConfiguration {
 
     @Bean
     public BearerTokenResolver bearerTokenResolver() {
-        var bearerTokenResolver = new DefaultBearerTokenResolver();
-        bearerTokenResolver.setAllowUriQueryParameter(true);
-        return bearerTokenResolver;
+        return new TokenResolver();
     }
 
     private SecretKey getSecretKey() {

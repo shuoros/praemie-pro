@@ -11,7 +11,7 @@ function calculate() {
         swal("Bitte geben Sie Ihre Postleitzahl ein!", 'error');
     } else {
         loadingSwal('Berechnung läuft!');
-        fetch(window.location.origin + '/public/insurance/calculate', {
+        fetch(window.location.origin + '/api/orders/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -19,12 +19,11 @@ function calculate() {
             body: JSON.stringify(calculateVM)
         })
         .then(async res => {
-            if (res.status === 200) {
+            if (res.status === 201) {
                 swal("Berechnungen werden durchgeführt!", 'success');
-                const data = await res.json();
-                document.getElementById('yearlyPrice').innerHTML = data.yearlyPrice + " EUR";
-                document.getElementById('monthlyPrice').innerHTML = data.monthlyPrice + " EUR";
-                document.getElementById('result').style.display="block";
+                const order = await res.json();
+                document.getElementById('noOrders').style.display="none";
+                appendOrderRow(order);
             } else if (res.status === 406) {
                 swal("Die Postleitzahl war ungültig!", 'error');
             } else if (res.status === 400) {
@@ -38,3 +37,21 @@ function calculate() {
         });
     }
 }
+
+function appendOrderRow(order) {
+    const orders = document.querySelector("#orders tbody");
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${order.id}</td>
+        <td>${order.vehicleType}</td>
+        <td>${order.yearlyDrive} KM</td>
+        <td>${order.zipcode}</td>
+        <td>${order.yearlyPrice} EUR</td>
+        <td>${order.date}</td>
+    `;
+
+    orders.appendChild(row);
+}
+

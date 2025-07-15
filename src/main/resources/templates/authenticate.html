@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <base href="/">
+
+    <meta charset="UTF-8">
+    <title>Prämie Pro – Anmelden / Registrieren</title>
+
+    <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+    <link href="assets/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center g-5">
+        <div class="col-md-12">
+            <div class="auth-card">
+                <h2>Anmelden</h2>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-Mail</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Passwort</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" onclick="login()">Anmelden</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/swal.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/authenticate.js"></script>
+</body>
+</html>

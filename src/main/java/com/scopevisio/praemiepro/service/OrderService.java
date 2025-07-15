@@ -6,6 +6,8 @@ import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.exception.UserNotFoundException;
 import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.service.dto.InsuranceDTO;
+import com.scopevisio.praemiepro.service.dto.OrderDTO;
+import com.scopevisio.praemiepro.service.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,10 @@ public class OrderService {
     @Autowired
     private InsuranceCalculatorService insuranceCalculatorService;
 
-    public Order createOrder(final VehicleType vehicleType,
+    @Autowired
+    private OrderMapper orderMapper;
+
+    public OrderDTO createOrder(final VehicleType vehicleType,
                              final Integer yearlyDrive,
                              final String zipcode,
                              final User user) {
@@ -33,10 +38,12 @@ public class OrderService {
                 zipcode
         );
 
-        return saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, user);
+        return orderMapper.orderToOrderDTO(
+                saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, user)
+        );
     }
 
-    public Order registerOrder(final VehicleType vehicleType, final Integer yearlyDrive, final String zipcode) {
+    public OrderDTO registerOrder(final VehicleType vehicleType, final Integer yearlyDrive, final String zipcode) {
         final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
                 vehicleType,
                 yearlyDrive,
@@ -44,7 +51,9 @@ public class OrderService {
         );
         final User currentUser = userService.getCurrentUser().orElseThrow(UserNotFoundException::new);
 
-        return saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, currentUser);
+        return orderMapper.orderToOrderDTO(
+                saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, currentUser)
+        );
     }
 
     private Order saveOrder(final VehicleType vehicleType,

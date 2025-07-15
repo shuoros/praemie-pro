@@ -4,6 +4,7 @@ import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.security.IsAdmin;
 import com.scopevisio.praemiepro.security.IsUser;
 import com.scopevisio.praemiepro.service.OrderService;
+import com.scopevisio.praemiepro.service.dto.OrderDTO;
 import com.scopevisio.praemiepro.web.vm.CalculateVM;
 import com.scopevisio.praemiepro.web.vm.OrderVM;
 import jakarta.validation.Valid;
@@ -25,8 +26,8 @@ public class OrderController {
 
     @PostMapping("")
     @IsAdmin
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderVM orderVM) {
-        final Order order = orderService.createOrder(
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody OrderVM orderVM) {
+        final OrderDTO order = orderService.createOrder(
                 orderVM.getVehicleType(),
                 orderVM.getYearlyDrive(),
                 orderVM.getZipcode(),
@@ -40,8 +41,8 @@ public class OrderController {
 
     @PostMapping("/register")
     @IsUser
-    public ResponseEntity<Order> registerOrder(@Valid @RequestBody CalculateVM calculateVM) {
-        final Order order = orderService.registerOrder(
+    public ResponseEntity<OrderDTO> registerOrder(@Valid @RequestBody CalculateVM calculateVM) {
+        final OrderDTO order = orderService.registerOrder(
                 calculateVM.getVehicleType(),
                 calculateVM.getYearlyDrive(),
                 calculateVM.getZipcode()

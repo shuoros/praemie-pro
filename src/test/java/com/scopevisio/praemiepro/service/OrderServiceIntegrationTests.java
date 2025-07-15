@@ -10,6 +10,8 @@ import com.scopevisio.praemiepro.exception.WrongZipcodeException;
 import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.AbstractTest;
+import com.scopevisio.praemiepro.service.dto.OrderDTO;
+import com.scopevisio.praemiepro.util.NumberUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,7 +75,7 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
 
         // Act
-        final Order order = orderService.createOrder(
+        final OrderDTO orderDTO = orderService.createOrder(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE,
@@ -81,18 +83,15 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         );
 
         // Assert
-        assertNotNull(order);
-        assertNotNull(order.getId());
-        assertNotNull(order.getUser());
-        assertEquals(USER_EMAIL, order.getUser().getEmail());
-        assertEquals(vehicleType, order.getVehicleType());
-        assertEquals(yearlyDrive, order.getYearlyDrive());
-        assertEquals(VALID_ZIPCODE, order.getZipcode());
-        assertEquals(AbstractTest.getBigDecimal(1650.00), order.getYearlyPrice());
-        assertNotNull(order.getCreatedBy());
-        assertNotNull(order.getCreatedDate());
-        assertNotNull(order.getLastModifiedBy());
-        assertNotNull(order.getLastModifiedDate());
+        assertNotNull(orderDTO);
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(vehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(yearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(1650.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
     }
 
     @Test
@@ -103,7 +102,7 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
 
         // Act
-        final Order order = orderService.createOrder(
+        final OrderDTO orderDTO = orderService.createOrder(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE,
@@ -111,18 +110,15 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         );
 
         // Assert
-        assertNotNull(order);
-        assertNotNull(order.getId());
-        assertNotNull(order.getUser());
-        assertEquals(USER_EMAIL, order.getUser().getEmail());
-        assertEquals(vehicleType, order.getVehicleType());
-        assertEquals(yearlyDrive, order.getYearlyDrive());
-        assertEquals(VALID_ZIPCODE, order.getZipcode());
-        assertEquals(AbstractTest.getBigDecimal(1100.00), order.getYearlyPrice());
-        assertNotNull(order.getCreatedBy());
-        assertNotNull(order.getCreatedDate());
-        assertNotNull(order.getLastModifiedBy());
-        assertNotNull(order.getLastModifiedDate());
+        assertNotNull(orderDTO);
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(vehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(yearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(1100.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
     }
 
     @Test
@@ -133,25 +129,22 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         final Integer yearlyDrive = 10000;
 
         // Act
-        final Order order = orderService.registerOrder(
+        final OrderDTO orderDTO = orderService.registerOrder(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE
         );
 
         // Assert
-        assertNotNull(order);
-        assertNotNull(order.getId());
-        assertNotNull(order.getUser());
-        assertEquals(USER_EMAIL, order.getUser().getEmail());
-        assertEquals(vehicleType, order.getVehicleType());
-        assertEquals(yearlyDrive, order.getYearlyDrive());
-        assertEquals(VALID_ZIPCODE, order.getZipcode());
-        assertEquals(AbstractTest.getBigDecimal(1650.00), order.getYearlyPrice());
-        assertNotNull(order.getCreatedBy());
-        assertNotNull(order.getCreatedDate());
-        assertNotNull(order.getLastModifiedBy());
-        assertNotNull(order.getLastModifiedDate());
+        assertNotNull(orderDTO);
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(vehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(yearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(1650.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
     }
 
     @Test
@@ -162,25 +155,22 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         final Integer yearlyDrive = 4500;
 
         // Act
-        final Order order = orderService.registerOrder(
+        final OrderDTO orderDTO = orderService.registerOrder(
                 vehicleType,
                 yearlyDrive,
                 VALID_ZIPCODE
         );
 
         // Assert
-        assertNotNull(order);
-        assertNotNull(order.getId());
-        assertNotNull(order.getUser());
-        assertEquals(USER_EMAIL, order.getUser().getEmail());
-        assertEquals(vehicleType, order.getVehicleType());
-        assertEquals(yearlyDrive, order.getYearlyDrive());
-        assertEquals(VALID_ZIPCODE, order.getZipcode());
-        assertEquals(AbstractTest.getBigDecimal(1100.00), order.getYearlyPrice());
-        assertNotNull(order.getCreatedBy());
-        assertNotNull(order.getCreatedDate());
-        assertNotNull(order.getLastModifiedBy());
-        assertNotNull(order.getLastModifiedDate());
+        assertNotNull(orderDTO);
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(vehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(yearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(1100.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
     }
 
     @Test
