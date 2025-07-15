@@ -42,10 +42,10 @@ public class Region implements Serializable {
     private String area2;
 
     @Column(name = "longitude")
-    private Double longitude;
+    private String longitude;
 
     @Column(name = "latitude")
-    private Double latitude;
+    private String latitude;
 
     @Column(name = "timezone")
     private String timezone;
@@ -127,19 +127,19 @@ public class Region implements Serializable {
         this.area2 = area2;
     }
 
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
