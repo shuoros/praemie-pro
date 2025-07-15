@@ -9,18 +9,41 @@
 </head>
 <body>
 <div class="container form-container">
-    <div class="row mb-3" th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">
+    <div class="row mb-3">
         <div class="d-grid col-md-6">
-            <a class="btn btn-secondary btn-lg" href="#">Startseite</a>
+            <a class="btn btn-secondary btn-lg" href="/dashboard">Startseite</a>
         </div>
         <div class="d-grid col-md-6">
             <a class="btn btn-secondary btn-lg" href="/dashboard/users">Kunden</a>
         </div>
     </div>
 
-    <h1 class="text-center">Willkommen [[${user.firstName}]]!</h1>
+    <h1 class="text-center">Kunde</h1>
 
-    <div class="col" th:if="${#lists.contains(auth, 'ROLE_USER') && !#lists.contains(auth, 'ROLE_ADMIN')}">
+    <table class="table table-bordered table-striped mt-3" id="user" th:if="${user != null}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vor- und Nachname</th>
+            <th>E-Mail</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td><button th:attr="onclick=|deleteUser('${user.id}', '${user.name}')|">Löschen</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="noUser" th:if="${user == null}">
+        <p class="alert alert-info mt-4 text-center">Der Kunde ist nicht gefunden!</p>
+    </div>
+
+    <div class="col" th:if="${user != null}">
         <div class="mb-3">
             <label for="yearlyDrive" class="form-label">Jährliche Kilometerleistung:</label>
             <input type="number" id="yearlyDrive" class="form-control" placeholder="z.B. 15000" required/>
@@ -42,14 +65,13 @@
         </div>
 
         <div class="d-grid">
-            <button class="btn btn-primary btn-lg" onclick="calculate()">Versicherung bestellen</button>
+            <button class="btn btn-primary btn-lg" th:attr="onclick=|calculate('${user.id}')|">Versicherung bestellen</button>
         </div>
     </div>
 
-    <h3 class="mt-4" th:if="${#lists.contains(auth, 'ROLE_USER') && !#lists.contains(auth, 'ROLE_ADMIN')}">Ihre bisherigen Bestellungen</h3>
-    <h3 class="mt-4" th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">Bestellungen</h3>
+    <h3 class="mt-4" th:if="${user != null}">Bestellungen des Kunden</h3>
 
-    <table class="table table-bordered table-striped mt-3" id="orders">
+    <table class="table table-bordered table-striped mt-3" id="orders" th:if="${user != null}">
         <thead>
         <tr>
             <th>Bestell-ID</th>
@@ -58,7 +80,6 @@
             <th>PLZ</th>
             <th>Jährliche Prämie (€)</th>
             <th>Datum</th>
-            <th th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">Kunde</th>
         </tr>
         </thead>
         <tbody>
@@ -69,12 +90,11 @@
             <td th:text="${order.zipcode}"></td>
             <td th:text="${order.yearlyPrice} + ' EUR'"></td>
             <td th:text="${order.date}"></td>
-            <td th:if="${#lists.contains(auth, 'ROLE_ADMIN')}"><a th:href="'/dashboard/users/' + ${order.user.id}" th:text="${order.user.name}"></a></td>
         </tr>
         </tbody>
     </table>
 
-    <div id="noOrders" th:if="${orders == null or orders.isEmpty()}">
+    <div id="noOrders" th:if="${user != null and (orders == null or orders.isEmpty())}">
         <p class="alert alert-info mt-4 text-center">Es gibt noch keine Bestellungen!</p>
     </div>
 
@@ -85,6 +105,6 @@
 
 <script src="assets/js/swal.js"></script>
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/users.js"></script>
 </body>
 </html>

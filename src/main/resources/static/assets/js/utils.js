@@ -11,9 +11,9 @@ function deleteAuthorizationCookie() {
   document.cookie = 'Authorization=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function getCookie(name) {
+function getAuthorizationCookie() {
   const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
+  const parts = value.split('; Authorization=');
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
@@ -53,10 +53,19 @@ function loadingSwal(text) {
     });
 }
 
-function formatDate(date) {
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}.${month}.${year}`;
+function appendOrderRow(order) {
+    const orders = document.querySelector("#orders tbody");
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${order.id}</td>
+        <td>${order.vehicleType}</td>
+        <td>${order.yearlyDrive} KM</td>
+        <td>${order.zipcode}</td>
+        <td>${order.yearlyPrice} EUR</td>
+        <td>${order.date}</td>
+    `;
+
+    orders.appendChild(row);
 }

@@ -2,7 +2,6 @@ package com.scopevisio.praemiepro.service;
 
 import com.scopevisio.praemiepro.config.Constants;
 import com.scopevisio.praemiepro.domain.Authority;
-import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.exception.UserNotFoundException;
@@ -11,6 +10,7 @@ import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.service.dto.OrderDTO;
+import com.scopevisio.praemiepro.service.dto.UserDTO;
 import com.scopevisio.praemiepro.util.NumberUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,13 +52,24 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         final Authority authority = new Authority();
         authority.setName("ROLE_USER");
 
-        final User user = new User();
-        user.setEmail(USER_EMAIL);
-        user.setActivated(true);
-        user.setPassword(passwordEncoder.encode("test"));
-        user.setAuthorities(Set.of(authority));
-        user.setCreatedBy(Constants.SYSTEM);
-        userRepository.saveAndFlush(user);
+        final User user1 = new User();
+        user1.setEmail(USER_EMAIL);
+        user1.setActivated(true);
+        user1.setPassword(passwordEncoder.encode(PASSWORD));
+        user1.setAuthorities(Set.of(authority));
+        user1.setCreatedBy(Constants.SYSTEM);
+        userRepository.saveAndFlush(user1);
+
+        final Authority authority2 = new Authority();
+        authority2.setName("ROLE_USER");
+
+        final User user2 = new User();
+        user2.setEmail(USER_EMAIL_2);
+        user2.setActivated(true);
+        user2.setPassword(passwordEncoder.encode(PASSWORD));
+        user2.setAuthorities(Set.of(authority2));
+        user2.setCreatedBy(Constants.SYSTEM);
+        userRepository.saveAndFlush(user2);
     }
 
     @AfterAll
@@ -206,5 +218,116 @@ public class OrderServiceIntegrationTests extends AbstractTest {
                         VALID_ZIPCODE
                 )
         );
+    }
+
+    @Test
+    void testFindOrdersOfUser() {
+        // Arrange
+        orderRepository.deleteAll();;
+
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final Integer yearlyDrive = 10000;
+
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+        final UserDTO userDTO = UserDTO.builder().id(user.getId()).build();
+        final OrderDTO orderDTO = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user
+        );
+
+        // Act
+        final List<OrderDTO> foundedOrders = orderService.findOrdersOfUser(userDTO);
+
+        // Assert
+        assertNotNull(foundedOrders);
+        assertEquals(1, foundedOrders.size());
+        assertTrue(foundedOrders.contains(orderDTO));
+    }
+
+    @Test
+    void testFindOrdersOfUserWithNoUser() {
+        // Act
+        final List<OrderDTO> foundedOrders = orderService.findOrdersOfUser(null);
+
+        // Assert
+        assertNotNull(foundedOrders);
+        assertEquals(0, foundedOrders.size());
+    }
+
+    @Test
+    void testFindOrdersBasedOnAuthoritiesWithAdminAuthority() {
+        // Arrange
+        orderRepository.deleteAll();;
+
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final Integer yearlyDrive = 10000;
+
+        final User user1 = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+        final OrderDTO orderDTO1 = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user1
+        );
+
+        final User user2 = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL_2).orElseThrow();
+        final OrderDTO orderDTO2 = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user2
+        );
+
+        final List<String> authorities = List.of("ROLE_ADMIN");
+
+        // Act
+        final List<OrderDTO> foundedOrders = orderService.findOrdersBasedOnAuthorities(authorities, null);
+
+        // Assert
+        assertNotNull(foundedOrders);
+        assertEquals(2, foundedOrders.size());
+        assertTrue(foundedOrders.contains(orderDTO1));
+        assertTrue(foundedOrders.contains(orderDTO2));
+    }
+
+    @Test
+    void testFindOrdersBasedOnAuthoritiesWithUserAuthority() {
+        // Arrange
+        orderRepository.deleteAll();;
+
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final Integer yearlyDrive = 10000;
+
+        final User user1 = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+        final OrderDTO orderDTO1 = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user1
+        );
+
+        final User user2 = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL_2).orElseThrow();
+        final OrderDTO orderDTO2 = orderService.createOrder(
+                vehicleType,
+                yearlyDrive,
+                VALID_ZIPCODE,
+                user2
+        );
+
+        final List<String> authorities = List.of("ROLE_USER");
+
+        // Act
+        final List<OrderDTO> foundedOrdersUser1 = orderService.findOrdersBasedOnAuthorities(authorities, user1);
+        final List<OrderDTO> foundedOrdersUser2 = orderService.findOrdersBasedOnAuthorities(authorities, user2);
+
+        // Assert
+        assertNotNull(foundedOrdersUser1);
+        assertNotNull(foundedOrdersUser2);
+        assertEquals(1, foundedOrdersUser1.size());
+        assertEquals(1, foundedOrdersUser2.size());
+        assertTrue(foundedOrdersUser1.contains(orderDTO1));
+        assertTrue(foundedOrdersUser2.contains(orderDTO2));
     }
 }

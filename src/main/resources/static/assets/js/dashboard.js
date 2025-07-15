@@ -37,21 +37,3 @@ function calculate() {
         });
     }
 }
-
-function appendOrderRow(order) {
-    const orders = document.querySelector("#orders tbody");
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-        <td>${order.id}</td>
-        <td>${order.vehicleType}</td>
-        <td>${order.yearlyDrive} KM</td>
-        <td>${order.zipcode}</td>
-        <td>${order.yearlyPrice} EUR</td>
-        <td>${order.date}</td>
-    `;
-
-    orders.appendChild(row);
-}
-

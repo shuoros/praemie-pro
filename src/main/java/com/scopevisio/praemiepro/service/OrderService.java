@@ -7,10 +7,14 @@ import com.scopevisio.praemiepro.exception.UserNotFoundException;
 import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.service.dto.InsuranceDTO;
 import com.scopevisio.praemiepro.service.dto.OrderDTO;
+import com.scopevisio.praemiepro.service.dto.UserDTO;
 import com.scopevisio.praemiepro.service.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional
@@ -54,6 +58,22 @@ public class OrderService {
         return orderMapper.orderToOrderDTO(
                 saveOrder(vehicleType, yearlyDrive, zipcode, insuranceDTO, currentUser)
         );
+    }
+
+    public List<OrderDTO> findOrdersOfUser(final UserDTO userDTO) {
+        final List<Order> ordersOfUser = userDTO != null
+                ? orderRepository.findAllByUser_id(userDTO.getId())
+                : Collections.emptyList();
+
+        return orderMapper.ordersToOrderDTOs(ordersOfUser);
+    }
+
+    public List<OrderDTO> findOrdersBasedOnAuthorities(final List<String> authorities, final User user) {
+        final List<Order> orders = authorities.contains("ROLE_ADMIN")
+                ? orderRepository.findAll()
+                : orderRepository.findAllByUser_id(user.getId());
+
+        return orderMapper.ordersToOrderDTOs(orders);
     }
 
     private Order saveOrder(final VehicleType vehicleType,

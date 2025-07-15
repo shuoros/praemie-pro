@@ -59,7 +59,7 @@ public class User extends AbstractAuditEntity<Long> implements Serializable {
     private Set<Authority> authorities = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Order> orders = new HashSet<>();
 

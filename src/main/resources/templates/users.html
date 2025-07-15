@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <title>Startseite - Prämie Pro</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+    <link href="assets/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container form-container">
+    <div class="row mb-3">
+        <div class="d-grid col-md-6">
+            <a class="btn btn-secondary btn-lg" href="/dashboard">Startseite</a>
+        </div>
+        <div class="d-grid col-md-6">
+            <a class="btn btn-secondary btn-lg" href="#">Kunden</a>
+        </div>
+    </div>
+
+    <h1 class="text-center">Kunden</h1>
+
+    <table class="table table-bordered table-striped mt-3" id="users">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vor- und Nachname</th>
+            <th>E-Mail</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td><a th:href="'/dashboard/users/' + ${user.id}">Anzeigen</a></td>
+            <td><button th:attr="onclick=|deleteUser('${user.id}', '${user.name}')|">Löschen</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="noOrders" th:if="${users == null or users.isEmpty()}">
+        <p class="alert alert-info mt-4 text-center">Es gibt noch keine Kunden!</p>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-danger" onclick="signout()">Abmelden</button>
+    </div>
+</div>
+
+<script src="assets/js/swal.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/users.js"></script>
+</body>
+</html>
