@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/assets/**").permitAll()
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/api/authenticate").permitAll()
+                        .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )

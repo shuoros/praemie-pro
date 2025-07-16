@@ -1,9 +1,11 @@
 package com.scopevisio.praemiepro.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.Authority;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.repository.UserRepository;
+import com.scopevisio.praemiepro.web.vm.UserVM;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,15 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserControllerIntegrationTests extends AbstractTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -64,6 +70,124 @@ public class UserControllerIntegrationTests extends AbstractTest {
     @Transactional
     void afterAll() {
         userRepository.deleteAll();
+    }
+
+    @Test
+    void testRegisterUserWithValidData() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL_2);
+        userVM.setPassword(PASSWORD);
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value(FIRST_NAME + " " + LAST_NAME))
+                .andExpect(jsonPath("$.email").value(USER_EMAIL_2));
+    }
+
+    @Test
+    void testRegisterUserWithExistingEmail() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL);
+        userVM.setPassword(PASSWORD);
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void testRegisterUserWithWrongEmail() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail("wrong@");
+        userVM.setPassword(PASSWORD);
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testRegisterUserWithNullEmail() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setPassword(PASSWORD);
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testRegisterUserWithWrongPasswordLength() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL);
+        userVM.setPassword("p");
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testRegisterUserWithNullPassword() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL);
+        userVM.setFirstName(FIRST_NAME);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testRegisterUserWithNullFirstName() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL);
+        userVM.setPassword(PASSWORD);
+        userVM.setLastName(LAST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testRegisterUserWithNullLastName() throws Exception {
+        // Arrange
+        final UserVM userVM = new UserVM();
+        userVM.setEmail(USER_EMAIL);
+        userVM.setPassword(PASSWORD);
+        userVM.setFirstName(FIRST_NAME);
+
+        // Act & Assert
+        mockMvc
+                .perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(userVM)))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

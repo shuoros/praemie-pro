@@ -3,6 +3,8 @@ package com.scopevisio.praemiepro.service;
 import com.scopevisio.praemiepro.AbstractTest;
 import com.scopevisio.praemiepro.domain.Authority;
 import com.scopevisio.praemiepro.domain.User;
+import com.scopevisio.praemiepro.exception.EmailAlreadyExistsException;
+import com.scopevisio.praemiepro.exception.WrongZipcodeException;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.service.dto.UserDTO;
 import org.junit.jupiter.api.AfterAll;
@@ -126,6 +128,40 @@ public class UserServiceIntegrationTests extends AbstractTest {
         );
         assertTrue(
                 customerUsers.stream().anyMatch(userDTO -> USER_EMAIL.equals(userDTO.getEmail()))
+        );
+    }
+
+    @Test
+    void testRegisterUserWithValidData() {
+        // Act
+        userService.registerUser(
+                FIRST_NAME,
+                LAST_NAME,
+                USER_EMAIL_2,
+                PASSWORD
+        );
+
+        // Assert
+        final Optional<User> optionalUser = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL_2);
+        assertTrue(optionalUser.isPresent());
+
+        final User registeredUser = optionalUser.get();
+        assertEquals(FIRST_NAME, registeredUser.getFirstName());
+        assertEquals(LAST_NAME, registeredUser.getLastName());
+        assertTrue(registeredUser.isActivated());
+    }
+
+    @Test
+    void testRegisterUserWithExistingEmail() {
+        // Act & Assert
+        assertThrows(
+                EmailAlreadyExistsException.class,
+                () -> userService.registerUser(
+                        FIRST_NAME,
+                        LAST_NAME,
+                        USER_EMAIL,
+                        PASSWORD
+                )
         );
     }
 }

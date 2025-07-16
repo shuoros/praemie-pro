@@ -9,7 +9,9 @@ public abstract class AbstractTest {
     protected static final String ADMIN_EMAIL = "admin@email.com";
     protected static final String USER_EMAIL = "user@email.com";
     protected static final String USER_EMAIL_2 = "user2@email.com";
-    public static final String PASSWORD = "test";
+    protected static final String PASSWORD = "test";
+    protected static final String FIRST_NAME = "Linus";
+    protected static final String LAST_NAME = "Trovalds";
 
     protected static BigDecimal getBigDecimal(final Double value) {
         return BigDecimal.valueOf(value).setScale(2);
