@@ -27,7 +27,7 @@ function deleteRequest(id) {
     .then(async res => {
         if (res.status === 204) {
             swal("Erfolgreich gelöscht!", 'success');
-            window.open((url = '/users'), (target = '_self'));
+            window.open((url = '/dashboard/users'), (target = '_self'));
         } else {
             swal("Beim Erreichen des Servers ist ein Problem aufgetreten! Bitte wenden Sie sich an den Support.", 'error');
         }
