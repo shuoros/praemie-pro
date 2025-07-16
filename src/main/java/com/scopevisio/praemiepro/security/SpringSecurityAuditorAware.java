@@ -1,9 +1,6 @@
 package com.scopevisio.praemiepro.security;
 
 import com.scopevisio.praemiepro.config.Constants;
-import com.scopevisio.praemiepro.domain.User;
-import com.scopevisio.praemiepro.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 

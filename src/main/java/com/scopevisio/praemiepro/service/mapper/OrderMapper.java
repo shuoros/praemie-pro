@@ -1,6 +1,5 @@
 package com.scopevisio.praemiepro.service.mapper;
 
-import com.scopevisio.praemiepro.config.Constants;
 import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.service.dto.OrderDTO;
 import com.scopevisio.praemiepro.util.DateUtil;
@@ -8,9 +7,7 @@ import com.scopevisio.praemiepro.util.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class OrderMapper {

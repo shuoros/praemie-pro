@@ -36,7 +36,7 @@ public class Order extends AbstractAuditEntity<Long> implements Serializable {
     private String zipcode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "orders" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"orders"}, allowSetters = true)
     private User user;
 
     public Long getId() {

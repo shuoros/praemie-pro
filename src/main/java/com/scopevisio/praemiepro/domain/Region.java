@@ -60,7 +60,7 @@ public class Region implements Serializable {
     private String active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "regions" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"regions"}, allowSetters = true)
     private State state;
 
     public Long getId() {

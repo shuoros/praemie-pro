@@ -37,7 +37,7 @@ public class Country implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "country")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "country", "regions" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"country", "regions"}, allowSetters = true)
     private Set<State> states = new HashSet<>();
 
     public Long getId() {

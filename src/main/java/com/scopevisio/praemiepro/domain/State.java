@@ -8,7 +8,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,12 +36,12 @@ public class State implements Serializable {
     private Float insuranceFactor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "states" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"states"}, allowSetters = true)
     private Country country;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "state")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "state" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"state"}, allowSetters = true)
     private Set<Region> regions = new HashSet<>();
 
     public Long getId() {

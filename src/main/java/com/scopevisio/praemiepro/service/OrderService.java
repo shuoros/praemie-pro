@@ -36,9 +36,9 @@ public class OrderService {
     private OrderMapper orderMapper;
 
     public OrderDTO createOrder(final VehicleType vehicleType,
-                             final Integer yearlyDrive,
-                             final String zipcode,
-                             final User user) {
+                                final Integer yearlyDrive,
+                                final String zipcode,
+                                final User user) {
         final InsuranceDTO insuranceDTO = insuranceCalculatorService.calculateInsurance(
                 vehicleType,
                 yearlyDrive,

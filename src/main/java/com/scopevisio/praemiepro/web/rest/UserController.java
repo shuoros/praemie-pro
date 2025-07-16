@@ -2,11 +2,8 @@ package com.scopevisio.praemiepro.web.rest;
 
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.security.IsAdmin;
-import com.scopevisio.praemiepro.security.IsUser;
 import com.scopevisio.praemiepro.service.UserService;
-import com.scopevisio.praemiepro.service.dto.OrderDTO;
 import com.scopevisio.praemiepro.service.dto.UserDTO;
-import com.scopevisio.praemiepro.web.vm.CalculateVM;
 import com.scopevisio.praemiepro.web.vm.UserVM;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -62,7 +62,7 @@ public class InsuranceCalculatorService {
     }
 
     private float calculateYearlyDriveFactor(final Integer yearlyDrive) {
-        if(yearlyDrive <= 5000) {
+        if (yearlyDrive <= 5000) {
             return 0.5f;
         } else if (yearlyDrive <= 10000) {
             return 1f;

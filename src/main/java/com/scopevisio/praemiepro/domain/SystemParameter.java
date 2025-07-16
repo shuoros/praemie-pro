@@ -1,7 +1,6 @@
 package com.scopevisio.praemiepro.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
