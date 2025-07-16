@@ -6,6 +6,7 @@ import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.security.IsAdmin;
+import com.scopevisio.praemiepro.security.IsUser;
 import com.scopevisio.praemiepro.service.OrderService;
 import com.scopevisio.praemiepro.service.UserService;
 import com.scopevisio.praemiepro.service.dto.OrderDTO;
@@ -68,5 +69,19 @@ public class DashboardMVC {
         model.addAttribute("orders", ordersOfUser);
 
         return "user";
+    }
+
+    @RequestMapping(value = "/dashboard/orders/{id}")
+    @IsUser
+    public String order(final Model model, @PathVariable("id") final Long id) {
+        final User currentUser = userService.getCurrentUser().orElseThrow();
+        final List<String> authorities = currentUser.getAuthorities().stream().map(Authority::getName).toList();
+        final OrderDTO orderDTO = orderService.findOrderByIdForCurrentUser(id);
+
+        model.addAttribute("vehicleTypes", VehicleType.values());
+        model.addAttribute("auth", authorities);
+        model.addAttribute("order", orderDTO);
+
+        return "order";
     }
 }

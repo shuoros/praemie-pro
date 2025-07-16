@@ -2,13 +2,16 @@ package com.scopevisio.praemiepro.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scopevisio.praemiepro.AbstractTest;
+import com.scopevisio.praemiepro.config.Constants;
 import com.scopevisio.praemiepro.domain.Authority;
+import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.repository.OrderRepository;
 import com.scopevisio.praemiepro.repository.UserRepository;
 import com.scopevisio.praemiepro.util.NumberUtils;
 import com.scopevisio.praemiepro.web.vm.CalculateVM;
+import com.scopevisio.praemiepro.web.vm.OrderUpdateVM;
 import com.scopevisio.praemiepro.web.vm.OrderVM;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
@@ -26,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -56,6 +61,8 @@ public class OrderControllerIntegrationTests extends AbstractTest {
         adminAuthority.setName("ROLE_ADMIN");
         final Authority userAuthority = new Authority();
         userAuthority.setName("ROLE_USER");
+        final Authority userAuthority2 = new Authority();
+        userAuthority2.setName("ROLE_USER");
 
         final User admin = new User();
         admin.setEmail(ADMIN_EMAIL);
@@ -70,6 +77,14 @@ public class OrderControllerIntegrationTests extends AbstractTest {
         user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setAuthorities(Set.of(userAuthority));
         userRepository.saveAndFlush(user);
+
+        final User user2 = new User();
+        user2.setEmail(USER_EMAIL_2);
+        user2.setActivated(true);
+        user2.setPassword(passwordEncoder.encode(PASSWORD));
+        user2.setAuthorities(Set.of(userAuthority2));
+        user2.setCreatedBy(Constants.SYSTEM);
+        userRepository.saveAndFlush(user2);
     }
 
     @AfterAll
@@ -105,6 +120,416 @@ public class OrderControllerIntegrationTests extends AbstractTest {
                 .andExpect(jsonPath("$.date").exists())
                 .andExpect(jsonPath("$.user").exists())
                 .andExpect(jsonPath("$.user.email").value(USER_EMAIL));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_EMAIL, authorities = {"SCOPE_ROLE_ADMIN", "SCOPE_ROLE_USER"})
+    void testDeleteOrderWithAdminAuthority() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act & Assert
+        mockMvc
+                .perform(delete("/api/orders/" + order.getId()))
+                .andExpect(status().isNoContent());
+        assertFalse(orderRepository.existsById(order.getId()));
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testDeleteOrderWithUserAuthority() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act & Assert
+        mockMvc
+                .perform(delete("/api/orders/" + order.getId()))
+                .andExpect(status().isForbidden());
+        assertTrue(orderRepository.existsById(order.getId()));
+    }
+
+    @Test
+    void testDeleteOrderWithNoAuthority() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act & Assert
+        mockMvc
+                .perform(delete("/api/orders/" + order.getId()))
+                .andExpect(status().isUnauthorized());
+        assertTrue(orderRepository.existsById(order.getId()));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_EMAIL, authorities = {"SCOPE_ROLE_ADMIN", "SCOPE_ROLE_USER"})
+    void testUpdateOrderWithAdminAuthority() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vehicleType").value(updatedVehicleType.translate()))
+                .andExpect(jsonPath("$.yearlyDrive").value(NumberUtils.formatToGermanNumber(updatedYearlyDrive)))
+                .andExpect(jsonPath("$.yearlyPrice").value("2.750"));
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithTheOwnerUser() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vehicleType").value(updatedVehicleType.translate()))
+                .andExpect(jsonPath("$.yearlyDrive").value(NumberUtils.formatToGermanNumber(updatedYearlyDrive)))
+                .andExpect(jsonPath("$.yearlyPrice").value("2.750"));
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL_2, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithAnotherUserThanOwner() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testUpdateOrderWithNoAuthority() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithDifferentIds() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/99999999").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithInvalidId() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(99999999L);
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/99999999").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithInvalidZipcode() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(INVALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().isNotAcceptable());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithNullVehicleType() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setYearlyDrive(updatedYearlyDrive);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithNullYearlyDrive() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithMinusYearlyDrive() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(-10000);
+        orderUpdateVM.setZipcode(VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithWrongZipcodeLength() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final OrderUpdateVM orderUpdateVM = new OrderUpdateVM();
+        orderUpdateVM.setId(order.getId());
+        orderUpdateVM.setVehicleType(updatedVehicleType);
+        orderUpdateVM.setYearlyDrive(-10000);
+        orderUpdateVM.setZipcode("5037");
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsBytes(orderUpdateVM)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithWrongVehicleType() throws Exception {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final int yearlyDrive = 10000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        final JSONObject payload = new JSONObject();
+        payload.put("id", order.getId());
+        payload.put("vehicleType", "AUTO");
+        payload.put("yearlyDrive", 10000);
+        payload.put("zipcode", VALID_ZIPCODE);
+
+        // Act & Assert
+        mockMvc
+                .perform(patch("/api/orders/" + order.getId()).contentType(MediaType.APPLICATION_JSON).content(payload.toString()))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

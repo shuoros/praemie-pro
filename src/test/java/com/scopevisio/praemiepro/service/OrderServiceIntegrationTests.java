@@ -2,6 +2,7 @@ package com.scopevisio.praemiepro.service;
 
 import com.scopevisio.praemiepro.config.Constants;
 import com.scopevisio.praemiepro.domain.Authority;
+import com.scopevisio.praemiepro.domain.Order;
 import com.scopevisio.praemiepro.domain.User;
 import com.scopevisio.praemiepro.domain.enumeration.VehicleType;
 import com.scopevisio.praemiepro.exception.UserNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,8 +51,19 @@ public class OrderServiceIntegrationTests extends AbstractTest {
     @BeforeAll
     @Transactional
     void beforeAll() {
+        final Authority adminAuthority = new Authority();
+        adminAuthority.setName("ROLE_ADMIN");
         final Authority authority = new Authority();
         authority.setName("ROLE_USER");
+        final Authority authority2 = new Authority();
+        authority2.setName("ROLE_USER");
+
+        final User admin = new User();
+        admin.setEmail(ADMIN_EMAIL);
+        admin.setActivated(true);
+        admin.setPassword(passwordEncoder.encode(PASSWORD));
+        admin.setAuthorities(Set.of(adminAuthority));
+        userRepository.saveAndFlush(admin);
 
         final User user1 = new User();
         user1.setEmail(USER_EMAIL);
@@ -59,9 +72,6 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         user1.setAuthorities(Set.of(authority));
         user1.setCreatedBy(Constants.SYSTEM);
         userRepository.saveAndFlush(user1);
-
-        final Authority authority2 = new Authority();
-        authority2.setName("ROLE_USER");
 
         final User user2 = new User();
         user2.setEmail(USER_EMAIL_2);
@@ -329,5 +339,139 @@ public class OrderServiceIntegrationTests extends AbstractTest {
         assertEquals(1, foundedOrdersUser2.size());
         assertTrue(foundedOrdersUser1.contains(orderDTO1));
         assertTrue(foundedOrdersUser2.contains(orderDTO2));
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithTheOwnerUser() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act
+        final Optional<OrderDTO> optionalOrderDTO = orderService.updateOrder(
+                order.getId(),
+                updatedVehicleType,
+                updatedYearlyDrive,
+                VALID_ZIPCODE
+        );
+
+        // Assert
+        assertTrue(optionalOrderDTO.isPresent());
+        final OrderDTO orderDTO = optionalOrderDTO.get();
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(updatedVehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(updatedYearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(2750.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_EMAIL, authorities = {"SCOPE_ROLE_ADMIN", "SCOPE_ROLE_USER"})
+    void testUpdateOrderWithAdminAuthority() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act
+        final Optional<OrderDTO> optionalOrderDTO = orderService.updateOrder(
+                order.getId(),
+                updatedVehicleType,
+                updatedYearlyDrive,
+                VALID_ZIPCODE
+        );
+
+        // Assert
+        assertTrue(optionalOrderDTO.isPresent());
+        final OrderDTO orderDTO = optionalOrderDTO.get();
+        assertNotNull(orderDTO.getId());
+        assertNotNull(orderDTO.getUser());
+        assertEquals(USER_EMAIL, orderDTO.getUser().getEmail());
+        assertEquals(updatedVehicleType.translate(), orderDTO.getVehicleType());
+        assertEquals(NumberUtils.formatToGermanNumber(updatedYearlyDrive), orderDTO.getYearlyDrive());
+        assertEquals(VALID_ZIPCODE, orderDTO.getZipcode());
+        assertEquals(NumberUtils.formatToGermanNumber(AbstractTest.getBigDecimal(2750.00)), orderDTO.getYearlyPrice());
+        assertNotNull(orderDTO.getDate());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL_2, authorities = "SCOPE_ROLE_USER")
+    void testUpdateOrderWithAnotherUserThanOwner() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act
+        final Optional<OrderDTO> optionalOrderDTO = orderService.updateOrder(
+                order.getId(),
+                updatedVehicleType,
+                updatedYearlyDrive,
+                VALID_ZIPCODE
+        );
+
+        // Assert
+        assertTrue(optionalOrderDTO.isEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = USER_EMAIL)
+    void testUpdateOrderWithInvalidZipcode() {
+        // Arrange
+        final VehicleType vehicleType = VehicleType.SPORT;
+        final VehicleType updatedVehicleType = VehicleType.SEDAN;
+        final int yearlyDrive = 10000;
+        final int updatedYearlyDrive = 50000;
+        final User user = userRepository.findOneWithAuthoritiesByEmailIgnoreCase(USER_EMAIL).orElseThrow();
+
+        final Order order = new Order();
+        order.setVehicleType(vehicleType);
+        order.setYearlyDrive(yearlyDrive);
+        order.setZipcode(VALID_ZIPCODE);
+        order.setUser(user);
+        orderRepository.save(order);
+
+        // Act & Assert
+        assertThrows(
+                WrongZipcodeException.class,
+                () -> orderService.updateOrder(
+                        order.getId(),
+                        updatedVehicleType,
+                        updatedYearlyDrive,
+                        INVALID_ZIPCODE
+                )
+        );
     }
 }

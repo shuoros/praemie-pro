@@ -1,4 +1,9 @@
 spring:
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:praemiepro}

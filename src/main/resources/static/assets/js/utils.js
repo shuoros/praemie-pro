@@ -65,6 +65,7 @@ function appendOrderRow(order) {
         <td>${order.zipcode}</td>
         <td>${order.yearlyPrice} EUR</td>
         <td>${order.date}</td>
+        <td><a href="/dashboard/orders/${order.id}">Anzeigen</a></td>
     `;
 
     orders.appendChild(row);

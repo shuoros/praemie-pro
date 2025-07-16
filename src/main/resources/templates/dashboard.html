@@ -59,6 +59,7 @@
             <th>Jährliche Prämie (€)</th>
             <th>Datum</th>
             <th th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">Kunde</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -70,6 +71,7 @@
             <td th:text="${order.yearlyPrice} + ' EUR'"></td>
             <td th:text="${order.date}"></td>
             <td th:if="${#lists.contains(auth, 'ROLE_ADMIN')}"><a th:href="'/dashboard/users/' + ${order.user.id}" th:text="${order.user.name}"></a></td>
+            <td><a th:href="'/dashboard/orders/' + ${order.id}">Anzeigen</a></td>
         </tr>
         </tbody>
     </table>

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -75,7 +76,7 @@ public class UserControllerIntegrationTests extends AbstractTest {
         mockMvc
                 .perform(delete("/api/users/" + user.getId()))
                 .andExpect(status().isNoContent());
-        assertTrue(userRepository.findById(user.getId()).isEmpty());
+        assertFalse(userRepository.existsById(user.getId()));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class UserControllerIntegrationTests extends AbstractTest {
         mockMvc
                 .perform(delete("/api/users/" + user.getId()))
                 .andExpect(status().isForbidden());
-        assertTrue(userRepository.findById(user.getId()).isPresent());
+        assertTrue(userRepository.existsById(user.getId()));
     }
 
     @Test
@@ -100,6 +101,6 @@ public class UserControllerIntegrationTests extends AbstractTest {
         mockMvc
                 .perform(delete("/api/users/" + user.getId()))
                 .andExpect(status().isUnauthorized());
-        assertTrue(userRepository.findById(user.getId()).isPresent());
+        assertTrue(userRepository.existsById(user.getId()));
     }
 }

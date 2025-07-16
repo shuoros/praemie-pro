@@ -3,7 +3,7 @@
 <head>
     <base href="/">
     <meta charset="UTF-8">
-    <title>Startseite - Prämie Pro</title>
+    <title>Kunde - Prämie Pro</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet"/>
     <link href="assets/css/style.css" rel="stylesheet"/>
 </head>
@@ -80,6 +80,7 @@
             <th>PLZ</th>
             <th>Jährliche Prämie (€)</th>
             <th>Datum</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -90,6 +91,7 @@
             <td th:text="${order.zipcode}"></td>
             <td th:text="${order.yearlyPrice} + ' EUR'"></td>
             <td th:text="${order.date}"></td>
+            <td><a th:href="'/dashboard/orders/' + ${order.id}">Anzeigen</a></td>
         </tr>
         </tbody>
     </table>
