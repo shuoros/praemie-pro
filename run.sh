@@ -1,2 +1,3 @@
+docker compose down
 docker build -t praemiepro:latest .
-docker compose up -d
+docker compose up --build -d
