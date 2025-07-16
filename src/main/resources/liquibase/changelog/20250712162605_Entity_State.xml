@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250712162605" author="soroush">
+        <createTable tableName="state">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="insurance_factor" type="float">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_id" type="bigint"/>
+        </createTable>
+
+        <loadData
+                file="liquibase/data/state.csv"
+                separator=";"
+                tableName="state"
+                usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="country_id" type="numeric"/>
+            <column name="name" type="string"/>
+            <column name="code" type="string"/>
+            <column name="insurance_factor" type="numeric"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

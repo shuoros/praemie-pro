@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: 'PraemiePro'
+  profiles:
+    active: dev
+  jackson:
+    serialization:
+      indent-output: true
+  liquibase:
+    change-log: 'classpath:liquibase/master.xml'
+
+application:
+  security:
+    jwt:
+      base64-secret: Y2I2OGI3M2FjOWRiYmU2OTg4ZmYzOWM0OWYxNTEyOGI2YTlhMGIwNWY2NjM4MTIxNWMwYzNiZGM0MmU3ZmZhZDUzMWNlMjFlZGJmZmQ3ZDdjYjk4NjhjNmQ2ODFlZjlkNzUzMmYzOWY5N2FhYzYwMjRhZDc2ZTAyOTUyZWRkY2Y=
+      token-validity-in-seconds: 86400
+      token-validity-in-seconds-for-remember-me: 2592000

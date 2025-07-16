@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250712145633" author="soroush">
+        <createTable tableName="region">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region_1" type="varchar(64)"/>
+            <column name="region_2" type="varchar(64)"/>
+            <column name="region_3" type="varchar(64)"/>
+            <column name="zipcode" type="varchar(5)"/>
+            <column name="location" type="varchar(64)"/>
+            <column name="area_1" type="varchar(64)"/>
+            <column name="area_2" type="varchar(64)"/>
+            <column name="latitude" type="varchar(32)"/>
+            <column name="longitude" type="varchar(32)"/>
+            <column name="timezone" type="varchar(64)"/>
+            <column name="utc" type="varchar(16)"/>
+            <column name="is_summer_time" type="varchar(16)"/>
+            <column name="active" type="varchar(4)"/>
+            <column name="state_id" type="bigint"/>
+        </createTable>
+
+        <loadData
+                file="liquibase/data/region.csv"
+                separator=";"
+                tableName="region"
+                usePreparedStatements="true">
+            <column name="state_id" type="numeric"/>
+            <column name="region_1" type="string"/>
+            <column name="region_2" type="string"/>
+            <column name="region_3" type="string"/>
+            <column name="zipcode" type="string"/>
+            <column name="location" type="string"/>
+            <column name="area_1" type="string"/>
+            <column name="area_2" type="string"/>
+            <column name="latitude" type="string"/>
+            <column name="longitude" type="string"/>
+            <column name="timezone" type="string"/>
+            <column name="utc" type="string"/>
+            <column name="is_summer_time" type="string"/>
+            <column name="active" type="string"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

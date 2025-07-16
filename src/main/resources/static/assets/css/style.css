@@ -1,0 +1,70 @@
+:root {
+    --primary-color: #fabb1e;
+}
+
+body {
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: black;
+}
+
+.btn-primary:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.btn-secondary {
+    background-color: white;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+table {
+    margin-top: 2rem;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: black;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: auto;
+}
+
+.auth-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+.form-label {
+    font-weight: 500;
+}

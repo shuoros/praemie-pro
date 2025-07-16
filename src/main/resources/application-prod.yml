@@ -1,0 +1,22 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:praemiepro}
+    username: ${POSTGRES_USER:praemiepro}
+    password: ${POSTGRES_PASSWORD:secret}
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    com.scopevisio.praemiepro: INFO

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <title>Startseite - Prämie Pro</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+    <link href="assets/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container form-container">
+    <div class="row mb-3" th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">
+        <div class="d-grid col-md-6">
+            <a class="btn btn-secondary btn-lg" href="#">Startseite</a>
+        </div>
+        <div class="d-grid col-md-6">
+            <a class="btn btn-secondary btn-lg" href="/dashboard/users">Kunden</a>
+        </div>
+    </div>
+
+    <h1 class="text-center">Willkommen [[${user.firstName}]]!</h1>
+
+    <div class="col" th:if="${#lists.contains(auth, 'ROLE_USER') && !#lists.contains(auth, 'ROLE_ADMIN')}">
+        <div class="mb-3">
+            <label for="yearlyDrive" class="form-label">Jährliche Kilometerleistung:</label>
+            <input type="number" id="yearlyDrive" class="form-control" placeholder="z.B. 15000" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="vehicleType" class="form-label">Fahrzeugtyp:</label>
+            <select id="vehicleType" class="form-select">
+                <option th:each="vehicleType : ${vehicleTypes}"
+                        th:value="${vehicleType.name()}"
+                        th:text="${vehicleType.translate()}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="zipcode" class="form-label">Postleitzahl:</label>
+            <input type="text" id="zipcode" class="form-control" placeholder="z.B. 10115" required/>
+        </div>
+
+        <div class="d-grid">
+            <button class="btn btn-primary btn-lg" onclick="calculate()">Versicherung bestellen</button>
+        </div>
+    </div>
+
+    <h3 class="mt-4" th:if="${#lists.contains(auth, 'ROLE_USER') && !#lists.contains(auth, 'ROLE_ADMIN')}">Ihre bisherigen Bestellungen</h3>
+    <h3 class="mt-4" th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">Bestellungen</h3>
+
+    <table class="table table-bordered table-striped mt-3" id="orders">
+        <thead>
+        <tr>
+            <th>Bestell-ID</th>
+            <th>Fahrzeugtyp</th>
+            <th>Kilometerleistung</th>
+            <th>PLZ</th>
+            <th>Jährliche Prämie (€)</th>
+            <th>Datum</th>
+            <th th:if="${#lists.contains(auth, 'ROLE_ADMIN')}">Kunde</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.vehicleType}"></td>
+            <td th:text="${order.yearlyDrive} + ' KM'"></td>
+            <td th:text="${order.zipcode}"></td>
+            <td th:text="${order.yearlyPrice} + ' EUR'"></td>
+            <td th:text="${order.date}"></td>
+            <td th:if="${#lists.contains(auth, 'ROLE_ADMIN')}"><a th:href="'/dashboard/users/' + ${order.user.id}" th:text="${order.user.name}"></a></td>
+            <td><a th:href="'/dashboard/orders/' + ${order.id}">Anzeigen</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="noOrders" th:if="${orders == null or orders.isEmpty()}">
+        <p class="alert alert-info mt-4 text-center">Es gibt noch keine Bestellungen!</p>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-danger" onclick="signout()">Abmelden</button>
+    </div>
+</div>
+
+<script src="assets/js/swal.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <title>Prämie Pro – Anmelden / Registrieren</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+    <link href="assets/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center g-5">
+        <div class="col-md-6">
+            <div class="auth-card">
+                <h2>Anmelden</h2>
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">E-Mail</label>
+                        <input type="email" class="form-control" id="loginEmail" name="loginEmail">
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Passwort</label>
+                        <input type="password" class="form-control" id="loginPassword" name="loginPassword">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" onclick="login()">Anmelden</button>
+                    </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="auth-card">
+                <h2>Registrieren</h2>
+                <div class="mb-3">
+                    <label for="registerFirstName" class="form-label">Vorname</label>
+                    <input type="text" class="form-control" id="registerFirstName" name="registerFirstName">
+                </div>
+                <div class="mb-3">
+                    <label for="registerLastName" class="form-label">Nachname</label>
+                    <input type="text" class="form-control" id="registerLastName" name="registerLastName">
+                </div>
+                <div class="mb-3">
+                    <label for="registerEmail" class="form-label">E-Mail</label>
+                    <input type="email" class="form-control" id="registerEmail" name="registerEmail">
+                </div>
+                <div class="mb-3">
+                    <label for="registerPassword" class="form-label">Passwort</label>
+                    <input type="password" class="form-control" id="registerPassword" name="registerPassword">
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" onclick="register()">Registrieren</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/swal.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/authenticate.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250713114620" author="soroush">
+        <createTable tableName="p_order">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="vehicle_type" type="varchar(16)"/>
+            <column name="yearly_drive" type="int"/>
+            <column name="yearly_price" type="decimal(21,2)"/>
+            <column name="zipcode" type="varchar(5)"/>
+            <column name="user_id" type="bigint"/>
+            <column name="created_date" type="timestamp"/>
+            <column name="created_by" type="varchar(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="last_modified_by" type="varchar(254)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

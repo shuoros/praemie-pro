@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Prämie Pro</title>
+    <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+    <link href="assets/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container form-container">
+    <h1 class="text-center">Versicherungsprämie berechnen</h1>
+
+    <div class="mb-3">
+        <label for="yearlyDrive" class="form-label">Jährliche Kilometerleistung:</label>
+        <input type="number" id="yearlyDrive" class="form-control" placeholder="z.B. 15000" required/>
+    </div>
+
+    <div class="mb-3">
+        <label for="vehicleType" class="form-label">Fahrzeugtyp:</label>
+        <select id="vehicleType" class="form-select">
+            <option th:each="vehicleType : ${vehicleTypes}"
+                    th:value="${vehicleType.name()}"
+                    th:text="${vehicleType.translate()}">
+            </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="zipcode" class="form-label">Postleitzahl:</label>
+        <input type="text" id="zipcode" class="form-control" placeholder="z. B. 10115" required/>
+    </div>
+
+    <div class="d-grid">
+        <button class="btn btn-primary btn-lg" onclick="calculate()">Prämie berechnen</button>
+    </div>
+
+    <table id="result" class="table table-bordered table-striped" style="display: none;">
+        <thead>
+        <tr>
+            <th>Prämie</th>
+            <th>Betrag (€)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Jährliche Prämie</td>
+            <td id="yearlyPrice">0.00</td>
+        </tr>
+        <tr>
+            <td>Monatliche Prämie</td>
+            <td id="monthlyPrice">0.00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-grid mt-3">
+        <a class="btn btn-primary btn-lg" href="/authenticate">Anmelden / Registrieren</a>
+    </div>
+</div>
+
+<script src="assets/js/swal.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/calculate.js"></script>
+</body>
+</html>
