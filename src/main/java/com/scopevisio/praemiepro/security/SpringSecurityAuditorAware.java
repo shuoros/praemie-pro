@@ -12,11 +12,10 @@ import java.util.Optional;
 @Component
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
-    @Autowired
-    private UserService userService;
-
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(userService.getCurrentUser().map(User::getEmail).orElse(Constants.SYSTEM));
+        return Optional.of(
+                Optional.ofNullable(SecurityUtils.extractPrincipal()).orElse(Constants.SYSTEM)
+        );
     }
 }
