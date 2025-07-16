@@ -38,6 +38,18 @@ Führen Sie die Anwendung mit diesem Befehl aus:
 
 Die App wird unter `http://localhost:8080` verfügbar.
 
+#### Init-Benutzer
+
+```
+E-Mail: admin@praemiepro.com
+Passwort: admin
+```
+
+```
+E-Mail: user@praemiepro.com
+Passwort: user
+```
+
 ## Testen
 Führen Sie Tests mit diesem Befehl aus:
 
