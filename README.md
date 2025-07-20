@@ -20,14 +20,14 @@ Dadurch wird ein Docker-Image erstellt und mit Docker Compose ausgeführt.
 
 Die App wird unter `http://localhost:8888` verfügbar.
 
-### mit Maven
+### mit Maven (mit der `dev` Umgebung)
 
 Dazu muss auf Ihrem Rechner mindestens Java 17 installiert sein und der Port 8080 muss frei sein.
 
 #### Build
 Zunächst erstellen Sie die App mit diesem Befehl:
 ```
-./mvnw clean install -DskipTests -Pprod
+./mvnw clean install -DskipTests -Pdev
 ```
 
 #### Run
