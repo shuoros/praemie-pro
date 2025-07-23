@@ -15,7 +15,7 @@
 
 ### mit Docker
 
-Um die Anwendung auszuführen, führen Sie `sh.bash` auf Ihrem Terminal aus.
+Um die Anwendung auszuführen, führen Sie `run.sh` auf Ihrem Terminal aus.
 Dadurch wird ein Docker-Image erstellt und mit Docker Compose ausgeführt.
 
 Die App wird unter `http://localhost:8888` verfügbar.
